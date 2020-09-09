@@ -9,21 +9,26 @@ var tabela = document.querySelector('table tbody');
 
 formulario.addEventListener('submit', function(event) {
     event.preventDefault();
+
+    let negociacao = new Negociacao(new Date(campoData.value), campoQuantidade.value, campoValor.value);
     
-    var linha = document.createElement('tr');
+    let linha = document.createElement('tr');
 
-    campos.forEach(campo => {
-       
-        var coluna = document.createElement('td');
-        coluna.textContent = campo.value;
-        linha.appendChild(coluna);
-    });
+    let colunaData = document.createElement('td');
+    colunaData.textContent = negociacao.data;
+    linha.appendChild(colunaData);
+    
+    let colunaQuantidade = document.createElement('td');
+    colunaQuantidade.textContent = negociacao.quantidade;
+    linha.appendChild(colunaQuantidade);
 
-    var volume = campoQuantidade.value * campoValor.value;
+    let colunaValor = document.createElement('td');
+    colunaValor.textContent = negociacao.valor;
+    linha.appendChild(colunaValor);
 
-    var coluna = document.createElement('td');
-    coluna.textContent = volume;
-    linha.appendChild(coluna);
+    let colunaVolume = document.createElement('td');
+    colunaVolume.textContent = negociacao.volume;
+    linha.appendChild(colunaVolume);
 
     tabela.appendChild(linha);
 
