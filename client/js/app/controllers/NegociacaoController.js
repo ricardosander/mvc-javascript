@@ -10,24 +10,28 @@ class NegociacaoController {
 
         this._tabela = $('table tbody');
 
-        this._campoData.value = '2020-09-10';
+        this._campoData.value = '2020-10-06';
+
+        this._listaNegociacoes = new ListaNegociacoes();
     }
 
     adicionar(event) {
         event.preventDefault();
 
-        let negociacao = new Negociacao(
-            this._converterData(this._campoData.value),
-            this._campoQuantidade.value, 
-            this._campoValor.value
-        );
+        let negociacao = this._criarNegociacao();
+
+        this._listaNegociacoes.adicionar(negociacao);
 
         this._adicionaLinha(negociacao);
         this._resetaFormulario();
     }
 
-    _converterData(dataString) {
-        return new Date(...dataString.split('-').map((valor, indice) => valor - indice % 2)) //código complicado só para exercitar arraw function e spred operator
+    _criarNegociacao() {
+        return new Negociacao(
+            DateHelper.textoParaData(this._campoData.value),
+            this._campoQuantidade.value, 
+            this._campoValor.value
+        );
     }
 
     _resetaFormulario() {
@@ -43,7 +47,7 @@ class NegociacaoController {
 
         let linha = document.createElement('tr');
 
-        this._adicionarColuna(linha, negociacao.data);
+        this._adicionarColuna(linha, DateHelper.dataParaTexto(negociacao.data));
         this._adicionarColuna(linha, negociacao.quantidade);
         this._adicionarColuna(linha, negociacao.valor);
         this._adicionarColuna(linha, negociacao.volume);
