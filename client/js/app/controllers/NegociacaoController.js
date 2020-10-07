@@ -13,6 +13,8 @@ class NegociacaoController {
         this._campoData.value = '2020-10-06';
 
         this._listaNegociacoes = new ListaNegociacoes();
+        this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'), this._listaNegociacoes);
+        this._viewNegociacoes.update();
     }
 
     adicionar(event) {
@@ -21,8 +23,8 @@ class NegociacaoController {
         let negociacao = this._criarNegociacao();
 
         this._listaNegociacoes.adicionar(negociacao);
+        this._viewNegociacoes.update();
 
-        this._adicionaLinha(negociacao);
         this._resetaFormulario();
     }
 
@@ -42,22 +44,4 @@ class NegociacaoController {
         this._campoData.focus();
     }
 
-
-    _adicionaLinha(negociacao) {
-
-        let linha = document.createElement('tr');
-
-        this._adicionarColuna(linha, DateHelper.dataParaTexto(negociacao.data));
-        this._adicionarColuna(linha, negociacao.quantidade);
-        this._adicionarColuna(linha, negociacao.valor);
-        this._adicionarColuna(linha, negociacao.volume);
-
-        this._tabela.appendChild(linha);
-    }
-
-    _adicionarColuna(linha, textContent) {
-        let coluna = document.createElement('td');
-        coluna.textContent = textContent;
-        linha.appendChild(coluna);
-    }
 }
