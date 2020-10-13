@@ -1,6 +1,6 @@
 class NegociacoesView extends View {
  
-    template() {
+    template(model) {
         return `
             <table class="table table-hover table-bordered">
                 <thead>
@@ -13,7 +13,7 @@ class NegociacoesView extends View {
                 </thead>
             
                 <tbody>
-                ${this._model.negociacoes.map(n =>
+                ${model.negociacoes.map(n =>
                     `<tr>
                         <td>${DateHelper.dataParaTexto(n.data)}</td>
                         <td>${n.quantidade}</td>
@@ -26,7 +26,7 @@ class NegociacoesView extends View {
                 <tfoot>
                     <tr>
                         <td colspan="3"></td>
-                        <td>${this._model.negociacoes.reduce((total, n) => total + n.volume, 0.0)}</td>
+                        <td>${model.negociacoes.reduce((total, n) => total + n.volume, 0.0)}</td>
                     </tr>
                 </tfoot>
             </table>

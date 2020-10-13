@@ -12,14 +12,13 @@ class NegociacaoController {
 
         this._campoData.value = '2020-10-06';
 
-        this._listaNegociacoes = new ListaNegociacoes();
-        this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'), this._listaNegociacoes);
-
         this._message = new Message();
-        this._viewMessage = new MessageView($('#mensagem-view'), this._message);
+        this._viewMessage = new MessageView($('#mensagem-view'));
+        
+        this._listaNegociacoes = new ListaNegociacoes(model => this._viewNegociacoes.update(model));
 
-        this._viewNegociacoes.update();
-        this._viewMessage.update();
+        this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'));
+        this._viewNegociacoes.update(this._listaNegociacoes);
     }
 
     adicionar(event) {
@@ -28,13 +27,21 @@ class NegociacaoController {
         let negociacao = this._criarNegociacao();
 
         this._listaNegociacoes.adicionar(negociacao);
-        this._viewNegociacoes.update();
 
         this._message.texto = 'Negociação adicionada com sucesso.';
-        this._viewMessage.update();
+        this._viewMessage.update(this._message);
 
         this._resetaFormulario();
     }
+
+    apagar() {
+
+        this._listaNegociacoes.esvaziar();
+
+        this._message.texto = 'Negociações apagadas com sucesso';
+        this._viewMessage.update(this._message);
+    }
+
 
     _criarNegociacao() {
         return new Negociacao(

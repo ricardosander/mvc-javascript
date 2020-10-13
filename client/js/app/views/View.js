@@ -4,8 +4,8 @@ class View {
         this._model = model;
     }
 
-    update() {
-        this._container.innerHTML = this.template();
+    update(model) {
+        this._container.innerHTML = this.template(model);
     }
 
     template() {
