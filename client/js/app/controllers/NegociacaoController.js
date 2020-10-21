@@ -15,7 +15,24 @@ class NegociacaoController {
         this._message = new Message();
         this._viewMessage = new MessageView($('#mensagem-view'));
         
-        this._listaNegociacoes = new ListaNegociacoes(model => this._viewNegociacoes.update(model));
+        let self = this;
+        this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
+            
+            get: function(target, prop, reciever){
+
+                if (['adicionar', 'esvaziar'].includes(prop) && typeof(target[prop] == typeof(Function))) {
+                
+                    return function() {
+                        Reflect.apply(target[prop], target, arguments);
+                        self._viewNegociacoes.update(target);
+                    }
+                }
+
+
+                return Reflect.get(target, prop, reciever);
+            }
+
+        });
 
         this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'));
         this._viewNegociacoes.update(this._listaNegociacoes);
