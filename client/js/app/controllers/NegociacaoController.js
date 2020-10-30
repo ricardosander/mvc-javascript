@@ -12,8 +12,11 @@ class NegociacaoController {
 
         this._campoData.value = '2020-10-06';
 
-        this._message = new Message();
-        this._viewMessage = new MessageView($('#mensagem-view'));
+        this._message = new Bind(
+            new Message(),
+            new MessageView($('#mensagem-view')),
+            'texto'
+        );
         
         this._listaNegociacoes = new Bind(
             new ListaNegociacoes(), 
@@ -28,19 +31,13 @@ class NegociacaoController {
         let negociacao = this._criarNegociacao();
 
         this._listaNegociacoes.adicionar(negociacao);
-
         this._message.texto = 'Negociação adicionada com sucesso.';
-        this._viewMessage.update(this._message);
-
         this._resetaFormulario();
     }
 
     apagar() {
-
         this._listaNegociacoes.esvaziar();
-
         this._message.texto = 'Negociações apagadas com sucesso';
-        this._viewMessage.update(this._message);
     }
 
 
