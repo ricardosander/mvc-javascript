@@ -15,24 +15,11 @@ class NegociacaoController {
         this._message = new Message();
         this._viewMessage = new MessageView($('#mensagem-view'));
         
-        let self = this;
-        this._listaNegociacoes = new Proxy(new ListaNegociacoes(), {
-            
-            get(target, prop, reciever){
-
-                if (['adicionar', 'esvaziar'].includes(prop) && typeof(target[prop] == typeof(Function))) {
-                
-                    return function() {
-                        Reflect.apply(target[prop], target, arguments);
-                        self._viewNegociacoes.update(target);
-                    }
-                }
-
-
-                return Reflect.get(target, prop, reciever);
-            }
-
-        });
+        this._listaNegociacoes = ProxyFactory.create(
+            new ListaNegociacoes(), 
+            ['adicionar', 'esvaziar'],
+            model => this._viewNegociacoes.update(model)
+        );
 
         this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'));
         this._viewNegociacoes.update(this._listaNegociacoes);
