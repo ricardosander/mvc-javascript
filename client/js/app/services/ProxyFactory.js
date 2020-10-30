@@ -8,8 +8,9 @@ class ProxyFactory {
                 if (props.includes(prop) && typeof(target[prop] == typeof(Function))) {
                 
                     return function() {
-                        Reflect.apply(target[prop], target, arguments);
+                        let result = Reflect.apply(target[prop], target, arguments);
                         action(target);
+                        return result;
                     }
                 }
 
@@ -19,12 +20,11 @@ class ProxyFactory {
 
             set(target, prop, value, reciever) {
 
+                let result = Reflect.set(target, prop, value, reciever);
                 if (props.includes(prop)) {
-                    target[prop] = value;
                     action(target);
                 }
-
-                return Reflect.set(target, prop, value, reciever);
+                return result;
             }
 
         });
