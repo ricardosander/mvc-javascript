@@ -15,14 +15,11 @@ class NegociacaoController {
         this._message = new Message();
         this._viewMessage = new MessageView($('#mensagem-view'));
         
-        this._listaNegociacoes = ProxyFactory.create(
+        this._listaNegociacoes = new Bind(
             new ListaNegociacoes(), 
-            ['adicionar', 'esvaziar'],
-            model => this._viewNegociacoes.update(model)
+            new NegociacoesView($('#lista-negociacoes')),
+            'adicionar', 'esvaziar',
         );
-
-        this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'));
-        this._viewNegociacoes.update(this._listaNegociacoes);
     }
 
     adicionar(event) {
