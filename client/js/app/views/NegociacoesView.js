@@ -26,7 +26,7 @@ class NegociacoesView extends View {
                 <tfoot>
                     <tr>
                         <td colspan="3"></td>
-                        <td>${model.negociacoes.volumeTotal}</td>
+                        <td>${model.volumeTotal}</td>
                     </tr>
                 </tfoot>
             </table>
