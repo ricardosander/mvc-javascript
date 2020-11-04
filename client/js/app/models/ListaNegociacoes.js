@@ -17,6 +17,7 @@ class ListaNegociacoes {
     }
 
     get volumeTotal() {
+        console.log(this.negociacoes);
         return this.negociacoes.reduce((total, n) => total + n.volume, 0.0);
     }
 }

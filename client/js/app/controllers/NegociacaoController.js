@@ -23,6 +23,8 @@ class NegociacaoController {
             new NegociacoesView($('#lista-negociacoes')),
             'adicionar', 'esvaziar',
         );
+
+        this._negociacaoService = new NegociacaoService();
     }
 
     adicionar(event) {
@@ -38,6 +40,23 @@ class NegociacaoController {
     apagar() {
         this._listaNegociacoes.esvaziar();
         this._message.texto = 'Negociações apagadas com sucesso';
+    }
+
+    importar(event) {
+        event.preventDefault();
+
+        this._negociacaoService.importar((erro, negociacoes) => {
+
+            if (erro) {
+                this._message.texto = erro;
+                return;
+            }
+
+            negociacoes.forEach(negociacao => {
+                this._listaNegociacoes.adicionar(negociacao);
+                this._message.texto = 'Negociações importadas com sucesso.'
+            });
+        });
     }
 
 
