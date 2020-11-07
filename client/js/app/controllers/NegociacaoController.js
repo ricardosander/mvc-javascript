@@ -32,9 +32,23 @@ class NegociacaoController {
 
         let negociacao = this._criarNegociacao();
 
-        this._listaNegociacoes.adicionar(negociacao);
-        this._message.texto = 'Negociação adicionada com sucesso.';
-        this._resetaFormulario();
+        this._negociacaoService.adicionar(
+            {
+                data: negociacao.data,
+                quantidade: negociacao.quantidade,
+                valor: negociacao.valor
+            },
+            erro => {
+
+                if (erro) {
+                    this._message.texto = erro;
+                    return;
+                }
+
+                this._listaNegociacoes.adicionar(negociacao);
+                this._message.texto = 'Negociação adicionada com sucesso.';
+                this._resetaFormulario();
+            });
     }
 
     apagar() {
@@ -51,6 +65,8 @@ class NegociacaoController {
                 this._message.texto = erro;
                 return;
             }
+
+            this._listaNegociacoes.esvaziar();
 
             negociacoes.forEach(negociacao => {
                 this._listaNegociacoes.adicionar(negociacao);
