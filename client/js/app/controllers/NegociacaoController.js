@@ -21,7 +21,7 @@ class NegociacaoController {
         this._listaNegociacoes = new Bind(
             new ListaNegociacoes(), 
             new NegociacoesView($('#lista-negociacoes')),
-            'adicionar', 'esvaziar',
+            'adicionar', 'esvaziar', 'ordenar'
         );
 
         this._negociacaoService = new NegociacaoService();
@@ -71,6 +71,9 @@ class NegociacaoController {
             .catch(erro => this._message.texto = erro);
     }
 
+    ordernar(coluna) {
+        this._listaNegociacoes.ordenar(coluna);
+    }
 
     _criarNegociacao() {
         return new Negociacao(

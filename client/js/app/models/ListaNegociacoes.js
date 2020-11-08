@@ -2,6 +2,7 @@ class ListaNegociacoes {
 
     constructor() {
         this._negociacoes = [];
+        this._ordernadoPor = null;
     }
 
     adicionar(negociacao) {
@@ -10,6 +11,15 @@ class ListaNegociacoes {
 
     esvaziar() {
         this._negociacoes = [];
+    }
+
+    ordenar(coluna) {
+        let regra = (a, b) =>  a[coluna] - b[coluna];
+        if (this._ordernadoPor == coluna) {
+            return this._negociacoes.reverse(regra);
+        }
+        this._ordernadoPor = coluna;
+        this._negociacoes.sort(regra);
     }
 
     get negociacoes() {
