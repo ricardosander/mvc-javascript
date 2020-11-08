@@ -57,10 +57,10 @@ class NegociacaoController {
     importar(event) {
         event.preventDefault();
 
-        let promise = this._negociacaoService.importar();
-
         Promise.all([
-            promise
+            this._negociacaoService.importarNegociacoesDaSemana(),
+            this._negociacaoService.importarNegociacoesDaSemanaAnterior(),
+            this._negociacaoService.importarNegociacoesDaSemanaRetrasada()
         ]).then(negociacoes => {
 
             this._listaNegociacoes.esvaziar();
