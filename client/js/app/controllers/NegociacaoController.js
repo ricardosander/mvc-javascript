@@ -32,23 +32,21 @@ class NegociacaoController {
 
         let negociacao = this._criarNegociacao();
 
-        this._negociacaoService.adicionar(
+        let promise = this._negociacaoService.adicionar(
             {
                 data: negociacao.data,
                 quantidade: negociacao.quantidade,
                 valor: negociacao.valor
-            },
-            erro => {
+            }
+        );
 
-                if (erro) {
-                    this._message.texto = erro;
-                    return;
-                }
-
-                this._listaNegociacoes.adicionar(negociacao);
+        promise
+            .then(negociacao => {
+                this._listaNegociacoes.adicionar(new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor));
                 this._message.texto = 'Negociação adicionada com sucesso.';
                 this._resetaFormulario();
-            });
+            })
+            .catch(erro => this._message.texto = erro);
     }
 
     apagar() {
@@ -59,20 +57,23 @@ class NegociacaoController {
     importar(event) {
         event.preventDefault();
 
-        this._negociacaoService.importar((erro, negociacoes) => {
+        let promise = this._negociacaoService.importar();
 
-            if (erro) {
-                this._message.texto = erro;
-                return;
-            }
+        Promise.all([
+            promise
+        ]).then(negociacoes => {
 
             this._listaNegociacoes.esvaziar();
 
-            negociacoes.forEach(negociacao => {
+            negociacoes
+            .reduce((a, b) => a.concat(b), [])
+            .map(negociacao => new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor))
+            .forEach(negociacao => {
                 this._listaNegociacoes.adicionar(negociacao);
                 this._message.texto = 'Negociações importadas com sucesso.'
             });
-        });
+        })
+        .catch(erro => this._message.texto = erro);
     }
 
 

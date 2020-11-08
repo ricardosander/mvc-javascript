@@ -1,56 +1,55 @@
 class NegociacaoService {
 
-    adicionar(negociacao, callback) {
+    adicionar(negociacao) {
 
-        console.log('Enviando negociação para o servidor...');
+        return new Promise((resolve, reject) => {
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/negociacoes", true);
-        xhr.setRequestHeader("Content-type", "application/json");
+            console.log('Enviando negociação para o servidor...');
 
-        xhr.onreadystatechange = () => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/negociacoes", true);
+            xhr.setRequestHeader("Content-type", "application/json");
 
-            if (xhr.readyState == 4) {
+            xhr.onreadystatechange = () => {
 
-                if (xhr.status != 200) {
-                    console.log(`Houve um erro ao enviar uma nova negociação para cadastro: ${xhr.status} = ${xhr.responseText}`);
-                    callback('Não foi possível salvar a nova negociação.', null);
-                    return;
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status != 200) {
+                        console.log(`Houve um erro ao enviar uma nova negociação para cadastro: ${xhr.status} - ${xhr.responseText}`);
+                        return reject('Não foi possível salvar a nova negociação.');
+                    }
+
+                    resolve(negociacao);
                 }
 
-                callback(null);
             }
 
-        }
-
-        xhr.send(JSON.stringify(negociacao));
-
+            xhr.send(JSON.stringify(negociacao));
+        });
     }
 
-    importar(callback) {
-        console.log("Importando negociações...");
+    importar() {
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", "/negociacoes/semana");
+        return new Promise((resolve, reject) => {
+            console.log("Importando negociações...");
 
-        xhr.onreadystatechange = () => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "/negociacoes/semana");
 
-            if (xhr.readyState == 4) {
+            xhr.onreadystatechange = () => {
 
-                if (xhr.status != 200) {
-                    console.log(`Houve um erro ao carregar as negociações: ${xhr.status} - ${xhr.responseText}`);
-                    callback('Não foi possível importar as negociações.', null);
-                    return;
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status != 200) {
+                        console.log(`Houve um erro ao carregar as negociações: ${xhr.status} - ${xhr.responseText}`);
+                        return reject('Não foi possível importar as negociações.');
+                    }
+
+                    resolve(JSON.parse(xhr.responseText));
                 }
-
-                callback(
-                    null,
-                    JSON.parse(xhr.responseText)
-                        .map(negociacao => new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor))
-                );
             }
-        }
 
-        xhr.send();
+            xhr.send();
+        });
     }
 }
