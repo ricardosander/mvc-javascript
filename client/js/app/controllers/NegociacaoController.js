@@ -57,23 +57,18 @@ class NegociacaoController {
     importar(event) {
         event.preventDefault();
 
-        Promise.all([
-            this._negociacaoService.importarNegociacoesDaSemana(),
-            this._negociacaoService.importarNegociacoesDaSemanaAnterior(),
-            this._negociacaoService.importarNegociacoesDaSemanaRetrasada()
-        ]).then(negociacoes => {
+        this._negociacaoService.importarNegociacoes()
+            .then(negociacoes => {
 
-            this._listaNegociacoes.esvaziar();
+                this._listaNegociacoes.esvaziar();
 
-            negociacoes
-            .reduce((acumulado, array) => acumulado.concat(array), [])
-            .map(negociacao => new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor))
-            .forEach(negociacao => {
-                this._listaNegociacoes.adicionar(negociacao);
-                this._message.texto = 'Negociações importadas com sucesso.'
-            });
-        })
-        .catch(erro => this._message.texto = erro);
+                negociacoes
+                    .forEach(negociacao => {
+                        this._listaNegociacoes.adicionar(negociacao);
+                        this._message.texto = 'Negociações importadas com sucesso.'
+                    });
+            })
+            .catch(erro => this._message.texto = erro);
     }
 
 

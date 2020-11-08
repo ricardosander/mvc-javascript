@@ -13,7 +13,21 @@ class NegociacaoService {
             });
     }
 
-    importarNegociacoesDaSemana() {
+    importarNegociacoes() {
+
+        return Promise.all([
+            this._importarNegociacoesDaSemana(),
+            this._importarNegociacoesDaSemanaAnterior(),
+            this._importarNegociacoesDaSemanaRetrasada()
+        ])
+            .then(periodos => {
+                return periodos.reduce((acumulado, periodo) => acumulado.concat(periodo), [])
+                    .map(negociacao => new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor))
+            })
+            .catch(erro => { throw new Error(erro); });
+    }
+
+    _importarNegociacoesDaSemana() {
 
         console.log("Importando negociações...");
 
@@ -27,7 +41,7 @@ class NegociacaoService {
             });
     }
 
-    importarNegociacoesDaSemanaAnterior() {
+    _importarNegociacoesDaSemanaAnterior() {
 
         console.log("Importando negociações da semana anterior...");
 
@@ -41,7 +55,7 @@ class NegociacaoService {
             });
     }
 
-    importarNegociacoesDaSemanaRetrasada() {
+    _importarNegociacoesDaSemanaRetrasada() {
 
         console.log("Importando negociações da semana retrasada...");
 
