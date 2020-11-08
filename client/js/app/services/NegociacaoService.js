@@ -1,55 +1,36 @@
 class NegociacaoService {
 
+    constructor() {
+        this._httpService = new HttpService();
+    }
+
     adicionar(negociacao) {
 
         return new Promise((resolve, reject) => {
 
-            console.log('Enviando negociação para o servidor...');
-
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "/negociacoes", true);
-            xhr.setRequestHeader("Content-type", "application/json");
-
-            xhr.onreadystatechange = () => {
-
-                if (xhr.readyState == 4) {
-
-                    if (xhr.status != 200) {
-                        console.log(`Houve um erro ao enviar uma nova negociação para cadastro: ${xhr.status} - ${xhr.responseText}`);
-                        return reject('Não foi possível salvar a nova negociação.');
-                    }
-
-                    resolve(negociacao);
-                }
-
-            }
-
-            xhr.send(JSON.stringify(negociacao));
+            this._httpService.post('/negociacoes', negociacao)
+                .then(negociacao => resolve(negociacao))
+                .catch(erro => {
+                    console.log(`Houve um erro ao enviar uma nova negociação para cadastro: ${erro}`);
+                    reject('Não foi possível salvar a nova negociação.');
+                });
         });
     }
 
     importar() {
 
         return new Promise((resolve, reject) => {
+            
             console.log("Importando negociações...");
 
-            let xhr = new XMLHttpRequest();
-            xhr.open("GET", "/negociacoes/semana");
-
-            xhr.onreadystatechange = () => {
-
-                if (xhr.readyState == 4) {
-
-                    if (xhr.status != 200) {
-                        console.log(`Houve um erro ao carregar as negociações: ${xhr.status} - ${xhr.responseText}`);
-                        return reject('Não foi possível importar as negociações.');
-                    }
-
-                    resolve(JSON.parse(xhr.responseText));
-                }
-            }
-
-            xhr.send();
+            this._httpService.get('/negociacoes/semana')
+                .then(negociacoes => {
+                    resolve(negociacoes.map(negociacao => new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor)));
+                })
+                .catch(erro => {
+                    console.log(`Houve um erro ao carregar as negociações: ${erro}`);
+                    reject('Não foi possível importar as negociações.');
+                });
         });
     }
 }

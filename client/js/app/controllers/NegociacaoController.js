@@ -66,7 +66,7 @@ class NegociacaoController {
             this._listaNegociacoes.esvaziar();
 
             negociacoes
-            .reduce((a, b) => a.concat(b), [])
+            .reduce((acumulado, array) => acumulado.concat(array), [])
             .map(negociacao => new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor))
             .forEach(negociacao => {
                 this._listaNegociacoes.adicionar(negociacao);
