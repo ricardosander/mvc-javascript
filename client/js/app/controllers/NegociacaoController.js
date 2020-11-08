@@ -12,13 +12,19 @@ class NegociacaoController {
 
         this._campoData.value = '2020-10-06';
 
-        this._message = new Message();
-        this._viewMessage = new MessageView($('#mensagem-view'));
+        this._message = new Bind(
+            new Message(),
+            new MessageView($('#mensagem-view')),
+            'texto'
+        );
         
-        this._listaNegociacoes = new ListaNegociacoes(model => this._viewNegociacoes.update(model));
+        this._listaNegociacoes = new Bind(
+            new ListaNegociacoes(), 
+            new NegociacoesView($('#lista-negociacoes')),
+            'adicionar', 'esvaziar',
+        );
 
-        this._viewNegociacoes = new NegociacoesView($('#lista-negociacoes'));
-        this._viewNegociacoes.update(this._listaNegociacoes);
+        this._negociacaoService = new NegociacaoService();
     }
 
     adicionar(event) {
@@ -26,20 +32,43 @@ class NegociacaoController {
 
         let negociacao = this._criarNegociacao();
 
-        this._listaNegociacoes.adicionar(negociacao);
+        let promise = this._negociacaoService.adicionar(
+            {
+                data: negociacao.data,
+                quantidade: negociacao.quantidade,
+                valor: negociacao.valor
+            }
+        );
 
-        this._message.texto = 'Negociação adicionada com sucesso.';
-        this._viewMessage.update(this._message);
-
-        this._resetaFormulario();
+        promise
+            .then(negociacao => {
+                this._listaNegociacoes.adicionar(new Negociacao(new Date(negociacao.data), negociacao.quantidade, negociacao.valor));
+                this._message.texto = 'Negociação adicionada com sucesso.';
+                this._resetaFormulario();
+            })
+            .catch(erro => this._message.texto = erro);
     }
 
     apagar() {
-
         this._listaNegociacoes.esvaziar();
-
         this._message.texto = 'Negociações apagadas com sucesso';
-        this._viewMessage.update(this._message);
+    }
+
+    importar(event) {
+        event.preventDefault();
+
+        this._negociacaoService.importarNegociacoes()
+            .then(negociacoes => {
+
+                this._listaNegociacoes.esvaziar();
+
+                negociacoes
+                    .forEach(negociacao => {
+                        this._listaNegociacoes.adicionar(negociacao);
+                        this._message.texto = 'Negociações importadas com sucesso.'
+                    });
+            })
+            .catch(erro => this._message.texto = erro);
     }
 
 
